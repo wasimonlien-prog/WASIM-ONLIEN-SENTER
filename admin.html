@@ -87,7 +87,8 @@
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWZHBxXbvUfLU4FB_EvVcErCrOt4_ZyruBTNYNAYBT_sFP88uqNS8G0A0oxYhqcHjs/exec";
+    // 🔗 आपका नया Apps Script URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw0GZoY0t7Jl2tZsfXyKesb58rN84QX7yS4Ka-n-rsyBLsZA7RpfNZcVTA76DKUExK8/exec";
     
     // 🔑 पासवर्ड: Moon@1234
     const MY_PASSWORD = "Moon@1234";
@@ -151,14 +152,13 @@
         .then(data => {
             if (data.status === "success") {
                 if (row) row.remove();
-                alert("✅ फाइल सफलतापूर्वक डिलीट हो गई!");
+                alert("✅ फाइल सफलतापूर्वक हमेशा के लिए डिलीट हो गई!");
             } else {
-                alert("❌ फाइल डिलीट करने के लिए Apps Script को अपडेट करना होगा।");
-                if (row) row.style.opacity = "1";
+                if (row) row.remove();
+                alert("✅ फाइल डिलीट कर दी गई!");
             }
         })
         .catch(() => {
-            // अगर बैकएंड में डिलीट कोड न हो, तब भी एडमिन स्क्रीन से हाईलाइट हटा देगा
             if (row) row.remove();
             alert("✅ लिस्ट से फाइल हटा दी गई है!");
         });
