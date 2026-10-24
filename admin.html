@@ -87,8 +87,8 @@
 </div>
 
 <script>
-    // 🔗 आपका नया Apps Script URL
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwSCI_aWCNsdH2QK2tT9OUjAyVTfAFaiYVR2kShQUd_DW9ct7o3lxoGxhkUWMU33lb/exec";
+    // 🔗 फोटो में दिख रहा आपका बिल्कुल नया Apps Script Web App URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyB3mShEHMBMq9axM-UCp-spwCC1uvTAadgmf4SgTE-NS84952kx6dmhF7c/exec";
     
     // 🔑 पासवर्ड: Moon@1234
     const MY_PASSWORD = "Moon@1234";
@@ -114,7 +114,7 @@
         })
         .then(res => res.json())
         .then(data => {
-            if (data.status === "success" && data.files.length > 0) {
+            if (data.status === "success" && data.files && data.files.length > 0) {
                 table.innerHTML = "";
                 data.files.reverse().forEach((file, index) => {
                     table.innerHTML += `
