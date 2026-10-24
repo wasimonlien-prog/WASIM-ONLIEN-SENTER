@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WASIM ONLINE CENTRE - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 30px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        h2 {
+            color: #38bdf8;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+        }
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+        }
+        input:focus {
+            border-color: #38bdf8;
+        }
+        .btn {
+            width: 100%;
+            background: #0284c7;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #0369a1;
+        }
+        .dashboard {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid #334155;
+        }
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .dash-header h3 {
+            color: #38bdf8;
+        }
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .file-list {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px dashed #334155;
+            text-align: center;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Form -->
+    <div class="card" id="loginCard">
+        <h2>WASIM ONLINE - Admin Login</h2>
+        <div class="form-group">
+            <label>User ID</label>
+            <input type="text" id="userId" placeholder="Enter User ID">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Enter Password">
+        </div>
+        <button class="btn" onclick="login()">Login to Dashboard</button>
+    </div>
+
+    <!-- Admin Dashboard (After Login) -->
+    <div class="dashboard" id="dashCard">
+        <div class="dash-header">
+            <h3>WASIM ONLINE - एडमिन कंट्रोल पैनल</h3>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+        <div class="file-list">
+            <p>📂 ग्राहकों द्वारा भेजी गई फोटो और फाइलें यहाँ दिखेंगी।</p>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            const uid = document.getElementById('userId').value;
+            const pass = document.getElementById('password').value;
+
+            if(uid === "9334952193" && pass === "Moon@1234") {
+                document.getElementById('loginCard').style.display = "none";
+                document.getElementById('dashCard').style.display = "block";
+            } else {
+                alert("गलत User ID या Password! कृपया दोबारा प्रयास करें।");
+            }
+        }
+
+        function logout() {
+            document.getElementById('dashCard').style.display = "none";
+            document.getElementById('loginCard').style.display = "block";
+            document.getElementById('userId').value = "";
+            document.getElementById('password').value = "";
+        }
+    </script>
+
+</body>
+</html>
