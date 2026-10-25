@@ -65,7 +65,7 @@
     <div id="adminDashboard" class="dashboard-card" style="display:none;">
         <div class="dash-top">
             <h3 style="color:#f8fafc; font-size: 18px;">📥 कस्टमर द्वारा भेजी गई नई फाइलें</h3>
-            <button onclick="loadFiles()" class="btn-refresh">🔄 रिफ्रेश करें</button>
+            <button id="refreshBtn" onclick="loadFiles()" class="btn-refresh">⚡ सुपरफास्ट रिफ्रेश</button>
         </div>
         
         <table>
@@ -102,14 +102,18 @@
 
     function loadFiles() {
         const table = document.getElementById('fileTable');
+        const refBtn = document.getElementById('refreshBtn');
         
-        // Purana data turant nahi hatayenge jab tak naya na aa jaye, taaki screen blank ya slow na lage
+        refBtn.innerText = "⚡ लोड हो रहा है...";
+
         fetch(SCRIPT_URL, {
             method: "POST",
             body: JSON.stringify({ action: "fetch" })
         })
         .then(res => res.json())
         .then(data => {
+            refBtn.innerText = "⚡ सुपरफास्ट रिफ्रेश";
+
             if (data.status === "success" && data.files.length > 0) {
                 table.innerHTML = "";
                 data.files.reverse().forEach(file => {
@@ -129,10 +133,7 @@
             }
         })
         .catch(() => {
-            // Agar error aaye tabhi error message dikhao
-            if(table.rows.length <= 1) {
-                table.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>❌ डेटा लाने में समस्या आई, पुनः प्रयास करें।</td></tr>";
-            }
+            refBtn.innerText = "⚡ सुपरफास्ट रिफ्रेश";
         });
     }
 
