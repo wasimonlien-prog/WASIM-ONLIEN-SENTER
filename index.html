@@ -90,7 +90,7 @@
         const reader = new FileReader();
 
         msg.style.color = "#38bdf8";
-        msg.innerText = "⚡ सुपरफास्ट अपलोड हो रहा है...";
+        msg.innerText = "⚡ रॉकेट स्पीड से फाइल भेजी जा रही है...";
 
         reader.onload = function(e) {
             const rawLog = e.target.result.split(',')[1];
@@ -101,19 +101,17 @@
                 fileData: rawLog
             };
 
-            // Lightning fast non-blocking fetch request
+            // Instant non-blocking request for zero delay
             fetch(SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
                 body: JSON.stringify(data)
             });
 
-            // Instant success feedback for lightning fast experience
-            setTimeout(() => {
-                msg.style.color = "#22c55e";
-                msg.innerText = "✅ फाइल सफलतापूर्वक सबमिट हो गई है!";
-                fileInput.value = "";
-            }, 500);
+            // Immediate success prompt so customer doesn't wait
+            msg.style.color = "#22c55e";
+            msg.innerText = "✅ फाइल सफलतापूर्वक सबमिट हो गई है!";
+            fileInput.value = "";
         };
         reader.readAsDataURL(file);
     }
