@@ -10,151 +10,103 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
-        body { background: #0f172a; color: #ffffff; min-height: 100vh; }
+        body { background: #0f172a; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
         
-        .header { background: #1e293b; padding: 15px 25px; border-bottom: 2px solid #38bdf8; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); flex-wrap: wrap; gap: 10px; }
-        .header-title { font-size: 20px; color: #38bdf8; font-weight: 800; letter-spacing: 1px; }
-        .header-cursive { font-family: 'Dancing Script', cursive !important; font-size: 34px; color: #38bdf8; font-weight: bold; }
-        .header-cursive .amp { color: #f8fafc; font-size: 26px; }
+        .box { max-width: 600px; width: 100%; background: #1e293b; padding: 25px; border-radius: 16px; border: 1.5px solid #38bdf8; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .shop-title { color: #38bdf8; font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1.5px; }
+        
+        .cursive-names { 
+            font-family: 'Dancing Script', cursive !important; 
+            font-size: 36px; 
+            color: #38bdf8; 
+            text-align: center;
+            margin-bottom: 20px; 
+            font-weight: bold;
+        }
+        .cursive-names .amp { color: #f8fafc; font-size: 28px; margin: 0 5px; }
 
-        .main-content { padding: 40px 15px; display: flex; justify-content: center; }
-        .login-card { background: #1e293b; width: 100%; max-width: 380px; padding: 35px 25px; border-radius: 16px; border: 1.5px solid #38bdf8; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .login-card h2 { color: #38bdf8; font-size: 22px; margin-bottom: 5px; font-weight: 700; }
-        .login-card p { color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
-        input[type="password"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #38bdf8; background: #0f172a; color: #fff; margin-bottom: 18px; font-size: 16px; outline: none; text-align: center; }
+        .file-list { margin-top: 15px; }
+        .file-item { background: #0f172a; padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; }
+        .file-name { font-size: 14px; color: #cbd5e1; word-break: break-all; max-width: 60%; }
         
-        .dashboard-card { background: #1e293b; width: 100%; max-width: 950px; padding: 25px; border-radius: 16px; border: 1px solid #334155; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
-        .dash-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #334155; flex-wrap: wrap; gap: 10px; }
-        
-        .btn-main { background: #38bdf8; color: #0f172a; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; transition: 0.3s; }
-        .btn-main:hover { background: #0284c7; color: #fff; }
-        .btn-refresh { background: #0284c7; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.3s; }
-        .btn-refresh:hover { background: #0369a1; }
-        .btn-download { background: #22c55e; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; display: inline-block; transition: 0.3s; margin-right: 5px; }
-        .btn-download:hover { background: #16a34a; }
-        .btn-delete { background: #ef4444; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-group { display: flex; gap: 8px; }
+        .btn-download { background: #22c55e; color: #fff; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .btn-delete { background: #ef4444; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-delete:hover { background: #dc2626; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 14px 16px; border-bottom: 1px solid #334155; text-align: left; font-size: 14px; }
-        th { background: #0f172a; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.5px; }
-        tr:hover { background: rgba(51, 65, 85, 0.3); }
-        td { color: #e2e8f0; }
+
+        #status-msg { text-align: center; margin-top: 15px; font-weight: bold; font-size: 14px; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <div class="header-title">WASIM ONLINE CENTRE</div>
-    <div class="header-cursive">
+<div class="box">
+    <div class="shop-title">WASIM ONLINE CENTRE</div>
+    <div class="cursive-names">
         Wasim <span class="amp">&</span> Neha
     </div>
-</div>
 
-<div class="main-content">
-    <div id="loginSection" class="login-card">
-        <h2>ADMIN LOGIN</h2>
-        <div class="header-cursive" style="margin: 5px 0 15px 0;">
-            Wasim <span class="amp">&</span> Neha
-        </div>
-        <p>डैशबोर्ड खोलने के लिए अपना पासवर्ड दर्ज करें</p>
-        <input type="password" id="passInput" placeholder="पासवर्ड यहाँ डालें">
-        <button onclick="login()" class="btn-main">लॉगिन करें 🚀</button>
-    </div>
-
-    <div id="adminDashboard" class="dashboard-card" style="display:none;">
-        <div class="dash-top">
-            <h3 style="color:#f8fafc; font-size: 18px;">📥 कस्टमर द्वारा भेजी गई नई फाइलें</h3>
-            <button onclick="loadFiles()" class="btn-refresh">🔄 रिफ्रेश करें</button>
-        </div>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>फाइल का नाम</th>
-                    <th>तारीख और समय</th>
-                    <th>एक्शन</th>
-                </tr>
-            </thead>
-            <tbody id="fileTable">
-                <tr><td colspan="3" style="text-align:center; color:#94a3b8;">डेटा लोड हो रहा है...</td></tr>
-            </tbody>
-        </table>
-    </div>
+    <h3 style="font-size: 16px; color: #38bdf8; margin-bottom: 10px;">📁 ग्राहकों द्वारा भेजी गई फाइलें (Admin Panel)</h3>
+    
+    <div id="status-msg">फाइलें लोड हो रही हैं...</div>
+    <div class="file-list" id="fileList"></div>
 </div>
 
 <script>
+    // 🔗 Aapka Sahi Web App URL
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBJJpdyO7yZPfhOly2a6Q09K1XKvop5pnVIShV-H3I-5thTd3L0OA61giHbqNh-PqdFQ/exec";
-    
-    // 🔑 पासवर्ड: Moon@1234
-    const MY_PASSWORD = "Moon@1234";
 
-    function login() {
-        const pass = document.getElementById('passInput').value;
-        if (pass === MY_PASSWORD) {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('adminDashboard').style.display = 'block';
-            loadFiles();
-        } else {
-            alert("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
-        }
-    }
-
+    // Data load karne ka function (Jaise hi page khulega)
     function loadFiles() {
-        const table = document.getElementById('fileTable');
-        table.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#38bdf8;'>⏳ फाइलें लोड हो रही हैं... कृपया इंतज़ार करें।</td></tr>";
-
-        fetch(SCRIPT_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: "fetch" })
-        })
+        fetch(SCRIPT_URL + "?action=getFiles")
         .then(res => res.json())
         .then(data => {
-            if (data.status === "success" && data.files.length > 0) {
-                table.innerHTML = "";
-                data.files.reverse().forEach(file => {
-                    table.innerHTML += `
-                        <tr>
-                            <td><b>📄 ${file.name}</b></td>
-                            <td style="color:#94a3b8;">🕒 ${file.date}</td>
-                            <td>
-                                <a href="${file.url}" target="_blank" class="btn-download">डाउनलोड 📥</a>
-                                <button onclick="deleteFile('${file.id}', '${file.name}')" class="btn-delete">डिटेल / डिलीट ❌</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            } else {
-                table.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#94a3b8;'>अभी कोई नई फाइल नहीं आई है।</td></tr>";
+            const listDiv = document.getElementById('fileList');
+            const msg = document.getElementById('status-msg');
+            listDiv.innerHTML = "";
+            
+            if(!data || data.length === 0) {
+                msg.innerText = "कोई फाइल उपलब्ध नहीं है।";
+                return;
             }
+            
+            msg.innerText = "";
+            data.forEach(file => {
+                const item = document.createElement('div');
+                item.className = "file-item";
+                item.id = "file-" + file.id; // Har row ko unique ID di taki turant gayab kiya ja sake
+                
+                item.innerHTML = `
+                    <span class="file-name">${file.name}</span>
+                    <div class="btn-group">
+                        <a href="${file.url}" target="_blank" class="btn-download">डाउनलोड</a>
+                        <button class="btn-delete" onclick="deleteFile('${file.id}')">डिलीट</button>
+                    </div>
+                `;
+                listDiv.appendChild(item);
+            });
         })
         .catch(() => {
-            table.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>❌ डेटा लाने में समस्या आई, पुनः प्रयास करें।</td></tr>";
+            document.getElementById('status-msg').innerText = "फाइलें लोड करने में समस्या आई।";
         });
     }
 
-    function deleteFile(fileId, fileName) {
-        if (!confirm(`क्या आप वाकई "${fileName}" को डिलीट करना चाहते हैं?`)) {
-            return;
-        }
+    // 🔥 Superfast Instant Delete Function (Zero Delay)
+    function deleteFile(fileId) {
+        if(!confirm("क्या आप वाकई इस फाइल को डिलीट करना चाहते हैं?")) return;
 
-        fetch(SCRIPT_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: "delete", fileId: fileId })
-        })
-        .then(res => res.json())
-        .then(res => {
-            if(res.status === "success") {
-                alert("✅ फाइल सफलतापूर्वक डिलीट हो गई है!");
-                loadFiles();
-            } else {
-                alert("❌ डिलीट करने में समस्या आई।");
-            }
-        })
-        .catch(() => {
-            alert("❌ नेटवर्क एरर!");
-        });
+        // 1. TURANT SCREEN SE HATA DO (Zero Delay)
+        const row = document.getElementById("file-id" in window ? "" : "file-" + fileId);
+        if(row) row.style.display = "none";
+
+        // 2. Background me Google Drive se delete ki request bhejo
+        fetch(SCRIPT_URL + "?action=delete&id=" + fileId, {
+            method: "GET",
+            mode: "no-cors"
+        }).catch(() => {});
     }
+
+    // Page load hote hi files dikhao
+    loadFiles();
 </script>
 
 </body>
