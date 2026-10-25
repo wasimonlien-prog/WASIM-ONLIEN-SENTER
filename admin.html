@@ -28,8 +28,8 @@
         
         .btn-main { background: #38bdf8; color: #0f172a; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; transition: 0.3s; }
         .btn-main:hover { background: #0284c7; color: #fff; }
-        .btn-refresh { background: #0284c7; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.3s; }
-        .btn-refresh:hover { background: #0369a1; }
+        .btn-refresh { background: #22c55e; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.3s; }
+        .btn-refresh:hover { background: #16a34a; }
         .btn-download { background: #22c55e; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; display: inline-block; transition: 0.3s; margin-right: 5px; }
         .btn-download:hover { background: #16a34a; }
         .btn-delete { background: #ef4444; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.3s; }
@@ -65,7 +65,7 @@
     <div id="adminDashboard" class="dashboard-card" style="display:none;">
         <div class="dash-top">
             <h3 style="color:#f8fafc; font-size: 18px;">📥 कस्टमर द्वारा भेजी गई नई फाइलें</h3>
-            <button id="refreshBtn" onclick="loadFiles()" class="btn-refresh">⚡ सुपरफास्ट रिफ्रेश</button>
+            <button id="refreshBtn" onclick="loadFiles(true)" class="btn-refresh">⚡ सुपरफास्ट रिफ्रेश</button>
         </div>
         
         <table>
@@ -90,21 +90,50 @@
     const MY_PASSWORD = "Moon@1234";
 
     function login() {
-        const pass = document.getElementById('passInput').value;
+        const pass = document.getElementById('passInput.value') || document.getElementById('passInput').value;
         if (pass === MY_PASSWORD) {
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
-            loadFiles();
+            
+            // Pehle local storage se turant data dikhao taki 1 second ka bhi delay na ho
+            const cachedFiles = localStorage.getItem('wasim_cached_files');
+            if(cachedFiles) {
+                renderTable(JSON.parse(cachedFiles));
+            }
+            
+            loadFiles(false); // Background me naya fetch karega
         } else {
             alert("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
         }
     }
 
-    function loadFiles() {
+    function renderTable(filesArray) {
         const table = document.getElementById('fileTable');
-        const refBtn = document.getElementById('refreshBtn');
+        if (!filesArray || filesArray.length === 0) {
+            table.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#94a3b8;'>अभी कोई नई फाइल नहीं आई है।</td></tr>";
+            return;
+        }
         
-        refBtn.innerText = "⚡ लोड हो रहा है...";
+        table.innerHTML = "";
+        filesArray.forEach(file => {
+            table.innerHTML += `
+                <tr id="row-${file.id}">
+                    <td><b>📄 ${file.name}</b></td>
+                    <td style="color:#94a3b8;">🕒 ${file.date}</td>
+                    <td>
+                        <a href="${file.url}" target="_blank" class="btn-download">डाउनलोड 📥</a>
+                        <button onclick="deleteFile('${file.id}', '${file.name}')" class="btn-delete">डिटेल / डिलीट ❌</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function loadFiles(isManualClick) {
+        const refBtn = document.getElementById('refreshBtn');
+        if(isManualClick) {
+            refBtn.innerText = "⏳ रिफ्रेश हो रहा है...";
+        }
 
         fetch(SCRIPT_URL, {
             method: "POST",
@@ -112,28 +141,22 @@
         })
         .then(res => res.json())
         .then(data => {
-            refBtn.innerText = "⚡ सुपरफास्ट रिफ्रेश";
+            if(isManualClick) {
+                refBtn.innerText = "⚡ सुपरफास्ट रिफ्रेश";
+            }
 
-            if (data.status === "success" && data.files.length > 0) {
-                table.innerHTML = "";
-                data.files.reverse().forEach(file => {
-                    table.innerHTML += `
-                        <tr id="row-${file.id}">
-                            <td><b>📄 ${file.name}</b></td>
-                            <td style="color:#94a3b8;">🕒 ${file.date}</td>
-                            <td>
-                                <a href="${file.url}" target="_blank" class="btn-download">डाउनलोड 📥</a>
-                                <button onclick="deleteFile('${file.id}', '${file.name}')" class="btn-delete">डिटेल / डिलीट ❌</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            } else {
-                table.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#94a3b8;'>अभी कोई नई फाइल नहीं आई है।</td></tr>";
+            if (data.status === "success" && data.files) {
+                const reversedFiles = data.files.reverse();
+                // Local storage me save karlo taki agli baar turant khule
+                localStorage.setItem('wasim_cached_files', JSON.stringify(reversedFiles));
+                renderTable(reversedFiles);
             }
         })
         .catch(() => {
-            refBtn.innerText = "⚡ सुपरफास्ट रिफ्रेश";
+            if(isManualClick) {
+                refBtn.innerText = "⚡ सुपरफास्ट रिफ्रेश";
+                alert("नेटवर्क स्लो है, पुराना डेटा दिखाया जा रहा है।");
+            }
         });
     }
 
@@ -143,11 +166,13 @@
             return;
         }
 
+        // 1. Turant screen se hatao
         const row = document.getElementById("row-" + fileId);
         if (row) {
             row.style.display = "none";
         }
 
+        // 2. Background me delete request bhejo
         fetch(SCRIPT_URL, {
             method: "POST",
             body: JSON.stringify({ action: "delete", fileId: fileId })
