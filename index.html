@@ -4,85 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WASIM ONLINE CENTRE</title>
-    <!-- Google Fonts for Extra Beautiful Cursive Writing -->
-    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Great+Vibes&display=swap" rel="stylesheet">
+    <!-- Strong Cursive Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
         body { background: #0f172a; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         
-        /* Main Card Box */
-        .box { max-width: 420px; width: 100%; background: #1e293b; padding: 30px 25px; border-radius: 16px; border: 2px solid #38bdf8; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .box { max-width: 420px; width: 100%; background: #1e293b; padding: 30px 25px; border-radius: 16px; border: 1.5px solid #38bdf8; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .shop-title { color: #38bdf8; font-size: 24px; font-weight: 800; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1.5px; }
         
-        /* Main Shop Title */
-        .shop-title { color: #38bdf8; font-size: 25px; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1.5px; }
-        
-        /* Cursive Writing Section with Emoji */
         .cursive-names { 
-            margin-bottom: 18px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        /* Wasim Style */
-        .wasim-name {
-            font-family: 'Great Vibes', cursive; 
-            font-size: 38px; 
+            font-family: 'Dancing Script', cursive !important; 
+            font-size: 42px; 
             color: #38bdf8; 
-            text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
-        }
-        
-        .amp {
-            color: #e2e8f0;
-            font-size: 24px;
-            font-family: 'Segoe UI', sans-serif;
+            margin-bottom: 20px; 
             font-weight: bold;
         }
-        
-        /* Extra Special Cursive Style for NEHA */
-        .neha-name {
-            font-family: 'Alex Brush', cursive; 
-            font-size: 48px; 
-            color: #f472b6; 
-            text-shadow: 0 0 15px rgba(244, 114, 182, 0.7), 0 0 5px #ec4899;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-        
+        .cursive-names .amp { color: #f8fafc; font-size: 32px; margin: 0 5px; }
         .sub-text { color: #94a3b8; font-size: 14px; margin-bottom: 22px; }
         
-        /* Upload Area */
         .file-box { border: 2px dashed #38bdf8; padding: 20px; border-radius: 10px; background: #0f172a; margin-bottom: 20px; }
         input[type="file"] { width: 100%; color: #94a3b8; }
         
-        /* Button */
         button { background: #22c55e; color: #fff; font-size: 17px; font-weight: bold; border: none; padding: 14px; border-radius: 10px; cursor: pointer; width: 100%; transition: 0.3s; }
         button:hover { background: #16a34a; }
-        
         #msg { margin-top: 18px; font-weight: bold; font-size: 15px; }
-        
-        /* Footer */
         .footer-text { margin-top: 22px; color: #64748b; font-size: 12px; border-top: 1px solid #334155; padding-top: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <!-- मुख्य दुकान का नाम -->
-    <div class="shop-title">🏬 WASIM ONLINE CENTRE 💻</div>
+    <div class="shop-title">WASIM ONLINE CENTRE</div>
     
-    <!-- कर्सिव राइटिंग + सुंदर इमोजी -->
     <div class="cursive-names">
-        <span>✨</span>
-        <span class="wasim-name">Wasim</span>
-        <span class="amp">&</span>
-        <span class="neha-name">Neha</span>
-        <span>👑</span>
+        Wasim <span class="amp">&</span> Neha
     </div>
     
-    <p class="sub-text">📸 अपनी फोटो या डॉक्यूमेंट चुनें और सबमिट करें 📄</p>
+    <p class="sub-text">📸 अपनी फोटो या डॉक्यूमेंट चुनें और सबमिट करें</p>
     
     <div class="file-box">
         <input type="file" id="fileInput" accept="image/*,.pdf">
@@ -93,7 +54,7 @@
     <div id="msg"></div>
     
     <div class="footer-text">
-        🤝 WASIM & NEHA DIGITAL SEVA CENTRE 🌟
+        WASIM & NEHA DIGITAL SEVA CENTRE
     </div>
 </div>
 
@@ -112,7 +73,7 @@
         const reader = new FileReader();
 
         msg.style.color = "#38bdf8";
-        msg.innerText = "⏳ फाइल भेजी जा रही है... कृपया इंतज़ार करें 🔄";
+        msg.innerText = "⏳ फाइल भेजी जा रही है... कृपया इंतज़ार करें।";
 
         reader.onload = function(e) {
             const rawLog = e.target.result.split(',')[1];
@@ -131,16 +92,16 @@
             .then(res => {
                 if(res.status === "success") {
                     msg.style.color = "#22c55e";
-                    msg.innerText = "✅ फाइल सफलतापूर्वक सबमिट हो गई है! 🎉";
+                    msg.innerText = "✅ फाइल सफलतापूर्वक सबमिट हो गई है!";
                     fileInput.value = "";
                 } else {
                     msg.style.color = "#ef4444";
-                    msg.innerText = "❌ अपलोड में समस्या आई, फिर से कोशिश करें ⚠️";
+                    msg.innerText = "❌ अपलोड में समस्या आई, फिर से कोशिश करें।";
                 }
             })
             .catch(() => {
                 msg.style.color = "#ef4444";
-                msg.innerText = "❌ नेटवर्क एरर! इंटरनेट चेक करें 🌐";
+                msg.innerText = "❌ नेटवर्क एरर! इंटरनेट चेक करें।";
             });
         };
         reader.readAsDataURL(file);
