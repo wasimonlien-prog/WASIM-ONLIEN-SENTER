@@ -1,28 +1,25 @@
-.then(async response => {
+<script>
+  // आपका सारा जावास्क्रिप्ट कोड यहाँ होना चाहिए
+  fetch("YOUR_WEB_APP_URL", {
+    method: "POST",
+    body: JSON.stringify({ ... })
+  })
+  .then(async response => {
     const text = await response.text();
     console.log("Server response:", text);
-
     let result;
-
     try {
-        result = JSON.parse(text);
+      result = JSON.parse(text);
     } catch (error) {
-        throw new Error("सर्वर ने JSON जवाब नहीं दिया: " + text.slice(0, 200));
+      throw new Error("सर्वर ने JSON जवाब नहीं दिया: " + text.slice(0, 100));
     }
-
     if (result.status === "success") {
-        msg.style.color = "#22c55e";
-        msg.innerText = "✅ फाइल सफलतापूर्वक अपलोड हो गई!";
-        fileInput.value = "";
+      // सफलता का कोड
     } else {
-        msg.style.color = "#ef4444";
-        msg.innerText = "❌ सर्वर Error: " +
-            (result.message || "कारण नहीं मिला");
-        console.error("Upload failed:", result);
+      // एरर का कोड
     }
-})
-.catch(error => {
+  })
+  .catch(error => {
     console.error("Upload error:", error);
-    msg.style.color = "#ef4444";
-    msg.innerText = "❌ समस्या: " + error.message;
-});
+  });
+</script>
