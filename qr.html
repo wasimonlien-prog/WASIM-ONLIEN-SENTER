@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WASIM ONLINE CENTRE - QR Code</title>
+    <title>WASIM ONLINE CENTRE - QR Code Pro</title>
     <!-- Cursive Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +36,7 @@
         .header-cursive-names .amp { color: #2563eb; font-size: 26px; }
 
         .qr-box { background: #f8fafc; padding: 20px; border-radius: 10px; border: 2px solid #0d47a1; display: inline-block; margin-bottom: 15px; }
-        #qrcode { background: white; padding: 10px; border-radius: 6px; }
+        #qrcode { background: white; padding: 10px; border-radius: 6px; display: flex; justify-content: center; align-items: center; }
 
         .link-text { font-size: 13px; color: #0d47a1; font-weight: bold; word-break: break-all; margin-bottom: 15px; display: block; text-decoration: none; }
         .link-text:hover { text-decoration: underline; }
@@ -80,7 +80,7 @@
         colorDark : "#0d47a1",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H,
-        logo: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgdmlld0JveD0iMCAwIDcwIDcwIj48cmVjdCB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIGZpbGw9IiNmZmYiIHJ4PSI2IiByeT0iNiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjNlbSIgZm9udC1mYW1pbHk9IidEYW5jaW5nIFNjcmlwdCcsIGN1cnNpdmUsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzJweCIgZmlsbD0iIzBkNDdhMSIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPklSPC90ZXh0Pjwvc3ZnPg==",
+        logo: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgdmlld0JveD0iMCAwIDcwIDcwIj48cmVjdCB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIGZpbGw9IiNmZmYiIHJ4PSI2IiByeT0iNiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjNlbSIgZm9udC1mYW1pbHk9IidEYW5jaW5nIFNjcmlwdCcsIGN1cnNpdmUsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzJweCIgZmlsbD0iIzBkNDdhMSIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPklSPC90ZXh0PC9zdmc+",
         logoWidth: 70,
         logoHeight: 70,
         logoBackgroundColor: "#ffffff",
@@ -89,8 +89,18 @@
     });
 
     function downloadQRCode() {
-        if (!qrcode) return;
-        qrcode.download("WASIM_ONLINE_CENTRE_QR.png");
+        var canvas = document.querySelector("#qrcode canvas");
+        if (!canvas) {
+            alert("कृपया थोड़ा इंतज़ार करें, QR कोड लोड हो रहा है!");
+            return;
+        }
+        var imageUri = canvas.toDataURL("image/png");
+        var downloadLink = document.createElement("a");
+        downloadLink.href = imageUri;
+        downloadLink.download = "WASIM_ONLINE_CENTRE_QR.png";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
     }
 </script>
 
