@@ -102,8 +102,8 @@
 
     function loadFiles() {
         const table = document.getElementById('fileTable');
-        table.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#38bdf8;'>⏳ फाइलें लोड हो रही हैं... कृपया इंतज़ार करें।</td></tr>";
-
+        
+        // Purana data turant nahi hatayenge jab tak naya na aa jaye, taaki screen blank ya slow na lage
         fetch(SCRIPT_URL, {
             method: "POST",
             body: JSON.stringify({ action: "fetch" })
@@ -129,7 +129,10 @@
             }
         })
         .catch(() => {
-            table.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>❌ डेटा लाने में समस्या आई, पुनः प्रयास करें।</td></tr>";
+            // Agar error aaye tabhi error message dikhao
+            if(table.rows.length <= 1) {
+                table.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>❌ डेटा लाने में समस्या आई, पुनः प्रयास करें।</td></tr>";
+            }
         });
     }
 
@@ -139,13 +142,11 @@
             return;
         }
 
-        // 1. Turant row ko screen se hata do taaki ek second ka bhi delay na lage
         const row = document.getElementById("row-" + fileId);
         if (row) {
             row.style.display = "none";
         }
 
-        // 2. Background me server ko delete request bhej do
         fetch(SCRIPT_URL, {
             method: "POST",
             body: JSON.stringify({ action: "delete", fileId: fileId })
