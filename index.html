@@ -1,79 +1,124 @@
-function doPost(e) {
-  try {
-    var data = JSON.parse(e.postData.contents);
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    
-    // 1. जब कस्टमर नई फाइल अपलोड करे
-    if (data.fileData) {
-      var decodedBlob = Utilities.newBlob(
-        Utilities.base64Decode(data.fileData), 
-        data.mimeType, 
-        data.filename
-      );
-      
-      // फाइल सीधे आपके Google Drive में सेव होगी
-      var folder = DriveApp.getRootFolder();
-      var file = folder.createFile(decodedBlob);
-      var fileUrl = file.getUrl();
-      
-      var currentDate = new Date().toLocaleString();
-      sheet.appendRow([data.filename, fileUrl, currentDate]);
-      
-      return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    // 2. जब एडमिन पैनल से फाइलें लोड करनी हों
-    if (data.action === "fetch") {
-      var rows = sheet.getDataRange().getValues();
-      var files = [];
-      
-      for (var i = 1; i < rows.length; i++) {
-        if (rows[i][0] !== "") {
-          files.push({
-            name: rows[i][0],      
-            url: rows[i][1],       
-            date: rows[i][2],      
-            id: rows[i][1]         
-          });
-        }
-      }
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", files: files }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    // 3. जब एडमिन पैनल से फाइल डिलीट करनी हो
-    if (data.action === "delete") {
-      var targetUrl = data.fileId;
-      var rows = sheet.getDataRange().getValues();
-      
-      for (var i = rows.length - 1; i >= 1; i--) {
-        var fileUrl = rows[i][1];
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WASIM ONLINE CENTRE - File Upload</title>
+    <!-- Strong Cursive Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
+        body { background: #0f172a; color: #ffffff; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
         
-        if (fileUrl == targetUrl || String(fileUrl).trim() == String(targetUrl).trim()) {
-          try {
-            var fileId = extractDriveId(fileUrl);
-            if (fileId) {
-              DriveApp.getFileById(fileId).setTrashed(true);
-            }
-          } catch (err) {}
-          
-          sheet.deleteRow(i + 1);
-          break;
-        }
-      }
-      
-      return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-  } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
+        .header { background: #1e293b; padding: 15px 25px; border-bottom: 2px solid #38bdf8; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); flex-wrap: wrap; gap: 10px; }
+        .header-title { font-size: 20px; color: #38bdf8; font-weight: 800; letter-spacing: 1px; }
+        .header-cursive { font-family: 'Dancing Script', cursive !important; font-size: 34px; color: #38bdf8; font-weight: bold; }
+        .header-cursive .amp { color: #f8fafc; font-size: 26px; }
 
-function extractDriveId(url) {
-  var match = String(url).match(/[-\w]{25,}/);
-  return match ? match[0] : null;
-}
+        .main-content { padding: 40px 15px; display: flex; justify-content: center; flex: 1; align-items: center; }
+        .upload-card { background: #1e293b; width: 100%; max-width: 420px; padding: 35px 25px; border-radius: 16px; border: 1.5px solid #38bdf8; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .upload-card h2 { color: #38bdf8; font-size: 22px; margin-bottom: 5px; font-weight: 700; }
+        .upload-card p { color: #94a3b8; font-size: 13px; margin-bottom: 25px; }
+        
+        .file-input-wrapper { margin-bottom: 20px; text-align: left; }
+        .file-input-wrapper label { display: block; margin-bottom: 8px; color: #38bdf8; font-size: 14px; font-weight: bold; }
+        input[type="file"] { width: 100%; padding: 10px; border-radius: 8px; border: 1px dashed #38bdf8; background: #0f172a; color: #fff; font-size: 14px; outline: none; cursor: pointer; }
+        
+        .btn-upload { background: #38bdf8; color: #0f172a; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; transition: 0.3s; }
+        .btn-upload:hover { background: #0284c7; color: #fff; }
+        
+        .status-msg { margin-top: 15px; font-size: 14px; font-weight: bold; }
+        
+        .footer { background: #1e293b; padding: 12px; text-align: center; border-top: 1px solid #334155; font-size: 13px; color: #94a3b8; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-title">WASIM ONLINE CENTRE</div>
+    <div class="header-cursive">
+        Wasim <span class="amp">&</span> Neha
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="upload-card">
+        <h2>📁 फाइल अपलोड करें</h2>
+        <div class="header-cursive" style="margin: 5px 0 15px 0;">
+            Wasim <span class="amp">&</span> Neha
+        </div>
+        <p>अपनी डॉक्यूमेंट या फोटो यहाँ से भेजें</p>
+        
+        <div class="file-input-wrapper">
+            <label for="fileField">फाइल चुनें:</label>
+            <input type="file" id="fileField">
+        </div>
+        
+        <button onclick="uploadFile()" class="btn-upload" id="uploadBtn">अपलोड करें 🚀</button>
+        <div id="status" class="status-msg"></div>
+    </div>
+</div>
+
+<div class="footer">
+    © Wasim Online Centre | All Rights Reserved
+</div>
+
+<script>
+    // 🔗 आपका सही Web App URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyM448TYBsLdQpQ3581kT6-18Own5vI0EzVRiDroZ4zL4CaU1qaa5Q1zvbbH9Ez9PBZ7Q/exec";
+
+    function uploadFile() {
+        const fileInput = document.getElementById('fileField');
+        const statusDiv = document.getElementById('status');
+        const uploadBtn = document.getElementById('uploadBtn');
+
+        if (fileInput.files.length === 0) {
+            alert("❌ कृपया पहले कोई फाइल चुनें!");
+            return;
+        }
+
+        const file = fileInput.files[0];
+        statusDiv.style.color = "#38bdf8";
+        statusDiv.innerText = "⏳ फाइल अपलोड हो रही है... कृपया इंतज़ार करें।";
+        uploadBtn.disabled = true;
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        
+        reader.onload = function () {
+            const base64Data = reader.result.split(',')[1];
+            const payload = {
+                filename: file.name,
+                mimeType: file.type,
+                fileData: base64Data
+            };
+
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success") {
+                    statusDiv.style.color = "#22c55e";
+                    statusDiv.innerText = "✅ फाइल सफलतापूर्वक अपलोड हो गई है!";
+                    fileInput.value = "";
+                } else {
+                    statusDiv.style.color = "#ef4444";
+                    statusDiv.innerText = "❌ अपलोड करने में विफल, पुनः प्रयास करें।";
+                }
+                uploadBtn.disabled = false;
+            })
+            .catch(() => {
+                statusDiv.style.color = "#ef4444";
+                statusDiv.innerText = "❌ सर्वर से कनेक्ट करने में समस्या आई!";
+                uploadBtn.disabled = false;
+            });
+        };
+    }
+</script>
+
+</body>
+</html>
