@@ -30,8 +30,10 @@
         .btn-main:hover { background: #0284c7; color: #fff; }
         .btn-refresh { background: #0284c7; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.3s; }
         .btn-refresh:hover { background: #0369a1; }
-        .btn-download { background: #22c55e; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; display: inline-block; transition: 0.3s; }
+        .btn-download { background: #22c55e; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; display: inline-block; transition: 0.3s; margin-right: 5px; }
         .btn-download:hover { background: #16a34a; }
+        .btn-delete { background: #ef4444; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-delete:hover { background: #dc2626; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 14px 16px; border-bottom: 1px solid #334155; text-align: left; font-size: 14px; }
@@ -82,7 +84,6 @@
 </div>
 
 <script>
-    // 🔗 नया और अपडेटेड वेब ऐप लिंक यहाँ लगा दिया गया है
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBJJpdyO7yZPfhOly2a6Q09K1XKvop5pnVIShV-H3I-5thTd3L0OA61giHbqNh-PqdFQ/exec";
     
     // 🔑 पासवर्ड: Moon@1234
@@ -116,7 +117,10 @@
                         <tr>
                             <td><b>📄 ${file.name}</b></td>
                             <td style="color:#94a3b8;">🕒 ${file.date}</td>
-                            <td><a href="${file.url}" target="_blank" class="btn-download">डाउनलोड / देखें 📥</a></td>
+                            <td>
+                                <a href="${file.url}" target="_blank" class="btn-download">डाउनलोड 📥</a>
+                                <button onclick="deleteFile('${file.id}', '${file.name}')" class="btn-delete">डिटेल / डिलीट ❌</button>
+                            </td>
                         </tr>
                     `;
                 });
@@ -126,6 +130,29 @@
         })
         .catch(() => {
             table.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>❌ डेटा लाने में समस्या आई, पुनः प्रयास करें।</td></tr>";
+        });
+    }
+
+    function deleteFile(fileId, fileName) {
+        if (!confirm(`क्या आप वाकई "${fileName}" को डिलीट करना चाहते हैं?`)) {
+            return;
+        }
+
+        fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "delete", fileId: fileId })
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.status === "success") {
+                alert("✅ फाइल सफलतापूर्वक डिलीट हो गई है!");
+                loadFiles();
+            } else {
+                alert("❌ डिलीट करने में समस्या आई।");
+            }
+        })
+        .catch(() => {
+            alert("❌ नेटवर्क एरर!");
         });
     }
 </script>
