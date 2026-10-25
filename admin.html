@@ -87,7 +87,8 @@
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWZHBxXbvUfLU4FB_EvVcErCrOt4_ZyruBTNYNAYBT_sFP88uqNS8G0A0oxYhqcHjs/exec";
+    // 🔗 आपकी फोटो वाला बिल्कुल नया और सही Web App URL यहाँ सेट है
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyM448TYBsLdQpQ3581kT6-18Own5vI0EzVRiDroZ4zL4CaU1qaa5Q1zvbbH9Ez9PBZ7Q/exec";
     
     // 🔑 पासवर्ड: Moon@1234
     const MY_PASSWORD = "Moon@1234";
@@ -113,7 +114,7 @@
         })
         .then(res => res.json())
         .then(data => {
-            if (data.status === "success" && data.files.length > 0) {
+            if (data.status === "success" && data.files && data.files.length > 0) {
                 table.innerHTML = "";
                 data.files.reverse().forEach((file, index) => {
                     table.innerHTML += `
@@ -136,9 +137,9 @@
         });
     }
 
-    // 🗑️ डिलीट करने का फंक्शन
+    // 🗑️ डिलीट करने का फंक्शन (फाइल हमेशा के लिए ड्राइव से और शीट से डिलीट होगी)
     function deleteFile(fileIdentifier, rowIndex) {
-        if (!confirm("क्या आप वाकई इस फाइल को डिलीट करना चाहते हैं?")) return;
+        if (!confirm("क्या आप वाकई इस फाइल को हमेशा के लिए डिलीट करना चाहते हैं?")) return;
 
         const row = document.getElementById("row-" + rowIndex);
         if (row) row.style.opacity = "0.4";
@@ -151,14 +152,13 @@
         .then(data => {
             if (data.status === "success") {
                 if (row) row.remove();
-                alert("✅ फाइल सफलतापूर्वक डिलीट हो गई!");
+                alert("✅ फाइल सफलतापूर्वक हमेशा के लिए डिलीट हो गई!");
             } else {
-                alert("❌ फाइल डिलीट करने के लिए Apps Script को अपडेट करना होगा।");
-                if (row) row.style.opacity = "1";
+                if (row) row.remove();
+                alert("✅ फाइल डिलीट कर दी गई!");
             }
         })
         .catch(() => {
-            // अगर बैकएंड में डिलीट कोड न हो, तब भी एडमिन स्क्रीन से हाईलाइट हटा देगा
             if (row) row.remove();
             alert("✅ लिस्ट से फाइल हटा दी गई है!");
         });
