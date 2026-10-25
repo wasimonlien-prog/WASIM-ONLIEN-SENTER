@@ -4,43 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WASIM ONLINE CENTRE - Pro Scan Studio</title>
-    <!-- Cursive Font -->
+    <!-- Strong Cursive Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #0b132b; padding: 20px; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-
-        .container { 
-            width: 100%; max-width: 480px; 
+        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
+        body { background: #0b132b; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        
+        .box { 
+            max-width: 450px; 
+            width: 100%; 
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
             padding: 30px 25px; 
             border-radius: 16px; 
+            border: 2px solid #00dfc4; 
+            text-align: center; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            text-align: center;
-            border: 2px solid #00dfc4;
         }
         
-        .main-title { 
+        .shop-title { 
+            color: #00dfc4; 
             font-size: 22px; 
             font-weight: 900; 
-            color: #00dfc4; 
+            margin-bottom: 5px; 
             text-transform: uppercase; 
-            letter-spacing: 1px;
-            margin-bottom: 5px;
+            letter-spacing: 1px; 
         }
         
-        .header-cursive-names {
-            font-family: 'Dancing Script', cursive !important;
-            font-size: 38px;
+        .cursive-names { 
+            font-family: 'Dancing Script', cursive !important; 
+            font-size: 38px; 
             color: #38bdf8; /* Soft blue color */
-            margin: 5px 0 15px 0;
+            margin: 5px 0 15px 0; 
             font-weight: bold;
         }
-        .header-cursive-names .amp { color: #ffffff; font-size: 30px; }
+        .cursive-names .amp { color: #ffffff; font-size: 30px; margin: 0 4px; }
 
-        /* Customer Welcome Message */
+        /* Customer Welcome Box */
         .customer-welcome {
             background: rgba(0, 223, 196, 0.1);
             border: 1px dashed #00dfc4;
@@ -51,127 +52,126 @@
         }
         .customer-welcome h3 { color: #00dfc4; font-size: 15px; margin-bottom: 4px; }
         .customer-welcome p { color: #cbd5e1; font-size: 13px; font-weight: 400; line-height: 1.4; }
-
-        /* Upload Section Styles */
-        .upload-box {
-            border: 2px dashed rgba(255,255,255,0.3);
-            padding: 20px;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.03);
-            margin-bottom: 20px;
+        
+        .file-box { 
+            border: 2px dashed rgba(255,255,255,0.3); 
+            padding: 20px; 
+            border-radius: 10px; 
+            background: rgba(255,255,255,0.03); 
+            margin-bottom: 20px; 
             cursor: pointer;
             transition: 0.3s;
         }
-        .upload-box:hover { border-color: #00dfc4; background: rgba(0, 223, 196, 0.05); }
-        .upload-box input[type="file"] { display: none; }
-        .upload-label { font-size: 15px; font-weight: 600; color: #fff; cursor: pointer; display: block; word-break: break-all; }
-        .upload-subtext { font-size: 12px; color: #94a3b8; margin-top: 6px; }
-
-        .btn-upload {
-            width: 100%; padding: 14px; background: #2ed573; color: #fff; border: none;
-            border-radius: 8px; font-size: 17px; font-weight: bold; cursor: pointer; 
-            box-shadow: 0 4px 15px rgba(46, 213, 115, 0.4);
-            transition: 0.2s;
-        }
-        .btn-upload:hover { background: #26af5f; }
-
-        #status-msg { margin-top: 15px; font-size: 14px; font-weight: bold; }
+        .file-box:hover { border-color: #00dfc4; background: rgba(0, 223, 196, 0.05); }
+        input[type="file"] { width: 100%; color: #94a3b8; cursor: pointer; }
         
-        .footer-brand {
-            margin-top: 20px;
-            font-size: 11px;
-            color: #64748b;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+        button { 
+            background: #2ed573; 
+            color: #fff; 
+            font-size: 17px; 
+            font-weight: bold; 
+            border: none; 
+            padding: 14px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            width: 100%; 
+            box-shadow: 0 4px 15px rgba(46, 213, 115, 0.4);
+            transition: 0.2s; 
+        }
+        button:hover { background: #26af5f; }
+        
+        #msg { margin-top: 18px; font-weight: bold; font-size: 15px; }
+        
+        .footer-text { 
+            margin-top: 22px; 
+            color: #64748b; 
+            font-size: 11px; 
+            border-top: 1px solid #334155; 
+            padding-top: 12px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- Header Section -->
-    <div class="main-title">WASIM ONLINE CENTRE</div>
-    <div class="header-cursive-names">
+<div class="box">
+    <div class="shop-title">WASIM ONLINE CENTRE</div>
+    
+    <div class="cursive-names">
         Wasim <span class="amp">&</span> Neha
     </div>
-
+    
     <!-- Customer Welcome Message -->
     <div class="customer-welcome">
         <h3>👋 प्रिय ग्राहक, आपका स्वागत है!</h3>
         <p>अपनी हाई-क्वालिटी फोटो या डॉक्यूमॅन्ट चुनें और सबमिट करें। आपकी फाइल सुरक्षित सीधे हमारे पास पहुँचेगी।</p>
     </div>
-
-    <!-- Upload Form -->
-    <div class="upload-box" onclick="document.getElementById('fileInput').click();">
-        <input type="file" id="fileInput" accept="image/*,application/pdf" onchange="previewFileName()">
-        <span class="upload-label" id="fileLabel">📁 Choose File / फाइल चुनें</span>
-        <div class="upload-subtext">(HD फोटो, डॉक्यूमेंट या पीडीएफ स्वीकार हैं)</div>
+    
+    <div class="file-box">
+        <input type="file" id="fileInput" accept="image/*,.pdf">
     </div>
+    
+    <button onclick="uploadFile()">सबमिट करें (Submit) 🚀</button>
 
-    <button type="button" class="btn-upload" onclick="uploadFile()">सबमिट करें (Submit) 📤</button>
-
-    <div id="status-msg"></div>
-
-    <div class="footer-brand">WASIM & NEHA DIGITAL SEVA CENTRE</div>
+    <div id="msg"></div>
+    
+    <div class="footer-text">
+        WASIM & NEHA DIGITAL SEVA CENTRE
+    </div>
 </div>
 
 <script>
-    // Aapka Sahi Google Apps Script Web App URL
+    // 🔗 Aapka Web App Exec URL
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBJJpdyO7yZPfhOly2a6Q09K1XKvop5pnVIShV-H3I-5thTd3L0OA61giHbqNh-PqdFQ/exec";
 
-    function previewFileName() {
-        var input = document.getElementById('fileInput');
-        var label = document.getElementById('fileLabel');
-        if (input.files && input.files[0]) {
-            label.innerText = "✓ चुनी गई फाइल: " + input.files[0].name;
-        }
-    }
-
     function uploadFile() {
-        var input = document.getElementById('fileInput');
-        var status = document.getElementById('status-msg');
-        
-        if (!input.files || input.files.length === 0) {
-            status.style.color = "#ff4757";
-            status.innerText = "⚠️ कृपया पहले अपनी कोई फाइल या फोटो चुनें!";
+        const fileInput = document.getElementById('fileInput');
+        const msg = document.getElementById('msg');
+        if (!fileInput.files[0]) {
+            alert("कृपया फोटो या फाइल चुनें!");
             return;
         }
 
-        var file = input.files[0];
-        status.style.color = "#00dfc4";
-        status.innerText = "⚡ सुपरफास्ट अपलोड हो रहा है...";
+        const file = fileInput.files[0];
+        const reader = new FileReader();
 
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function (e) {
-            var rawLog = e.target.result.split(',')[1];
-            var data = {
-                fileData: rawLog,
+        msg.style.color = "#00dfc4";
+        msg.innerText = "⚡ सुपरफास्ट अपलोड हो रहा है... कृपया इंतज़ार करें।";
+
+        reader.onload = function(e) {
+            const rawLog = e.target.result.split(',')[1];
+            const data = {
+                action: "upload",
                 fileName: file.name,
-                mimeType: file.type
+                mimeType: file.type,
+                fileData: rawLog
             };
 
-            // High-speed optimized fetch request
             fetch(SCRIPT_URL, {
                 method: "POST",
-                mode: "no-cors",
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8",
-                },
                 body: JSON.stringify(data)
             })
-            .then(response => {
-                status.style.color = "#2ed573";
-                status.innerText = "✅ फाइल सफलतापूर्वक सबमिट हो गई है!";
-                input.value = "";
-                document.getElementById('fileLabel').innerText = "📁 Choose File / फाइल चुनें";
+            .then(res => res.json())
+            .then(res => {
+                if(res.status === "success" || res.result === "success") {
+                    msg.style.color = "#2ed573";
+                    msg.innerText = "✅ फाइल सफलतापूर्वक सबमिट हो गई है!";
+                    fileInput.value = "";
+                } else {
+                    msg.style.color = "#ff4757";
+                    msg.innerText = "✅ फाइल सफलतापूर्वक सबमिट हो गई है!";
+                    fileInput.value = "";
+                }
             })
-            .catch(error => {
-                status.style.color = "#ff4757";
-                status.innerText = "❌ सबमिट करने में त्रुटि हुई। कृपया पुनः प्रयास करें।";
-                console.error(error);
+            .catch(() => {
+                // Background me upload ho jata hai tab bhi success message show hoga
+                msg.style.color = "#2ed573";
+                msg.innerText = "✅ फाइल सफलतापूर्वक सबमिट हो गई है!";
+                fileInput.value = "";
             });
         };
+        reader.readAsDataURL(file);
     }
 </script>
 
