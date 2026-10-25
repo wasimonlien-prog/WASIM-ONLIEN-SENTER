@@ -34,7 +34,7 @@
         .btn-delete { background: #ef4444; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-delete:hover { background: #dc2626; }
 
-        #status-msg { text-align: center; margin-top: 15px; font-weight: bold; font-size: 14px; }
+        #status-msg { text-align: center; margin-top: 15px; font-weight: bold; font-size: 14px; color: #38bdf8; }
     </style>
 </head>
 <body>
@@ -45,7 +45,7 @@
         Wasim <span class="amp">&</span> Neha
     </div>
 
-    <h3 style="font-size: 16px; color: #38bdf8; margin-bottom: 10px;">📁 ग्राहकों द्वारा भेजी गई फाइलें (Admin Panel)</h3>
+    <h3 style="font-size: 16px; color: #38bdf8; margin-bottom: 10px; text-align: center;">📁 ग्राहकों द्वारा भेजी गई फाइलें (Admin Panel)</h3>
     
     <div id="status-msg">फाइलें लोड हो रही हैं...</div>
     <div class="file-list" id="fileList"></div>
@@ -55,13 +55,14 @@
     // 🔗 Aapka Sahi Web App URL
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBJJpdyO7yZPfhOly2a6Q09K1XKvop5pnVIShV-H3I-5thTd3L0OA61giHbqNh-PqdFQ/exec";
 
-    // Data load karne ka function (Jaise hi page khulega)
     function loadFiles() {
-        fetch(SCRIPT_URL + "?action=getFiles")
+        const msg = document.getElementById('status-msg');
+        msg.innerText = "फाइलें लोड हो रही हैं...";
+
+        fetch(SCRIPT_URL)
         .then(res => res.json())
         .then(data => {
             const listDiv = document.getElementById('fileList');
-            const msg = document.getElementById('status-msg');
             listDiv.innerHTML = "";
             
             if(!data || data.length === 0) {
@@ -73,7 +74,7 @@
             data.forEach(file => {
                 const item = document.createElement('div');
                 item.className = "file-item";
-                item.id = "file-" + file.id; // Har row ko unique ID di taki turant gayab kiya ja sake
+                item.id = "file-" + file.id;
                 
                 item.innerHTML = `
                     <span class="file-name">${file.name}</span>
@@ -86,26 +87,23 @@
             });
         })
         .catch(() => {
-            document.getElementById('status-msg').innerText = "फाइलें लोड करने में समस्या आई।";
+            document.getElementById('status-msg').innerText = "❌ फाइलें लोड करने में समस्या आई। कृपया रिफ्रेश करें।";
         });
     }
 
-    // 🔥 Superfast Instant Delete Function (Zero Delay)
+    // Instant Superfast Delete
     function deleteFile(fileId) {
         if(!confirm("क्या आप वाकई इस फाइल को डिलीट करना चाहते हैं?")) return;
 
-        // 1. TURANT SCREEN SE HATA DO (Zero Delay)
-        const row = document.getElementById("file-id" in window ? "" : "file-" + fileId);
+        const row = document.getElementById("file-" + fileId);
         if(row) row.style.display = "none";
 
-        // 2. Background me Google Drive se delete ki request bhejo
-        fetch(SCRIPT_URL + "?action=delete&id=" + fileId, {
+        fetch(SCRIPT_URL + "?id=" + fileId, {
             method: "GET",
             mode: "no-cors"
         }).catch(() => {});
     }
 
-    // Page load hote hi files dikhao
     loadFiles();
 </script>
 
