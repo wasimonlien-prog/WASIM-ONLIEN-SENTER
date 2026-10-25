@@ -65,8 +65,10 @@
     <div id="adminDashboard" class="dashboard-card" style="display:none;">
         <div class="dash-top">
             <h3 style="color:#f8fafc; font-size: 18px;">📥 कस्टमर द्वारा भेजी गई नई फाइलें</h3>
-            <button onclick="superFastRefresh()" class="btn-refresh">⚡ सुपरफास्ट रिफ्रेश</button>
+            <button id="refreshBtn" onclick="superFastRefresh()" class="btn-refresh">⚡ सुपरफास्ट रिफ्रेश</button>
         </div>
+        
+        <div id="loadStatus" style="font-size: 13px; color: #38bdf8; margin-bottom: 8px; font-weight: bold;"></div>
         
         <table>
             <thead>
@@ -93,14 +95,17 @@
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
             
-            // 1. Turant local memory se dikhao (0 Second Delay)
-            const cached = localStorage.getItem('wasim_super_cache');
+            // 1. Local Cache se turant data dikhao (0 Second delay)
+            const cached = localStorage.getItem('wasim_lightning_cache');
             if (cached) {
                 renderTable(JSON.parse(cached));
+                document.getElementById('loadStatus').innerText = "✅ तुरंत लोड हो गया (लेटेस्ट डेटा चेक हो रहा है...)";
+            } else {
+                document.getElementById('loadStatus').innerText = "⏳ पहली बार फाइलें लाई जा रही हैं...";
             }
             
-            // 2. Background me server se naya data le aao
-            fetchFreshData();
+            // 2. Background me server se fetch karo
+            fetchFreshData(false);
         } else {
             alert("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
         }
@@ -128,29 +133,48 @@
         });
     }
 
-    function fetchFreshData() {
+    function fetchFreshData(isManual) {
+        const statusDiv = document.getElementById('loadStatus');
+        const refBtn = document.getElementById('refreshBtn');
+
+        if(isManual) {
+            refBtn.innerText = "⏳ लोड हो रहा है...";
+            statusDiv.innerText = "⏳ सर्वर से नई फाइलें लाई जा रही हैं...";
+        }
+
         fetch(SCRIPT_URL, {
             method: "POST",
             body: JSON.stringify({ action: "fetch" })
         })
         .then(res => res.json())
         .then(data => {
+            if(isManual) {
+                refBtn.innerText = "⚡ सुपरफास्ट रिफ्रेश";
+            }
+
             if (data.status === "success" && data.files) {
                 const reversed = data.files.reverse();
-                localStorage.setItem('wasim_super_cache', JSON.stringify(reversed));
+                localStorage.setItem('wasim_lightning_cache', JSON.stringify(reversed));
                 renderTable(reversed);
+                statusDiv.innerText = "✅ लिस्ट एकदम अपडेटेड है!";
+                setTimeout(() => { statusDiv.innerText = ""; }, 3000);
             }
         })
-        .catch(() => {});
+        .catch(() => {
+            if(isManual) {
+                refBtn.innerText = "⚡ सुपरफास्ट रिफ्रेश";
+                statusDiv.innerText = "⚠️ नेटवर्क धीमा है, पुराना डेटा दिखाया जा रहा है।";
+            }
+        });
     }
 
-    // ⚡ Superfast Refresh Button (Bina wait kiye turant cache dikhayega aur background me sync karega)
+    // ⚡ Superfast Refresh Button
     function superFastRefresh() {
-        const cached = localStorage.getItem('wasim_super_cache');
+        const cached = localStorage.getItem('wasim_lightning_cache');
         if (cached) {
-            renderTable(JSON.parse(cached)); // 0 Second me turant samne aayega
+            renderTable(JSON.parse(cached)); // Turant samne aayega
         }
-        fetchFreshData(); // Background me naya update check karega
+        fetchFreshData(true); // Background me naya update check karega aur status dikhayega
     }
 
     // 🔥 Instant Delete (Zero Delay on Screen)
@@ -165,12 +189,12 @@
             row.style.display = "none";
         }
 
-        // 2. Local cache se bhi turant hatao taaki refresh par wapas na aaye
-        const cached = localStorage.getItem('wasim_super_cache');
+        // 2. Local cache se bhi turant hatao
+        const cached = localStorage.getItem('wasim_lightning_cache');
         if (cached) {
             let files = JSON.parse(cached);
             files = files.filter(f => f.id !== fileId);
-            localStorage.setItem('wasim_super_cache', JSON.stringify(files));
+            localStorage.setItem('wasim_lightning_cache', JSON.stringify(files));
         }
 
         // 3. Background me server ko delete request bhejo
