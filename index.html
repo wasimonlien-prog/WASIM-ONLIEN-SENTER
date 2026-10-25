@@ -1,25 +1,86 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WASIM ONLINE CENTRE - Direct Upload</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0f172a; color: #fff; text-align: center; padding: 20px; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .box { max-width: 420px; width: 100%; background: #1e293b; padding: 30px; border-radius: 16px; border: 2px solid #38bdf8; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        h2 { color: #38bdf8; margin-bottom: 8px; font-size: 24px; }
+        p { color: #94a3b8; font-size: 14px; margin-bottom: 25px; }
+        .file-box { border: 2px dashed #38bdf8; padding: 20px; border-radius: 10px; background: #0f172a; margin-bottom: 20px; cursor: pointer; }
+        input[type="file"] { width: 100%; color: #94a3b8; }
+        button { background: #22c55e; color: #fff; font-size: 18px; font-weight: bold; border: none; padding: 14px; border-radius: 10px; cursor: pointer; width: 100%; transition: 0.3s; }
+        button:hover { background: #16a34a; }
+        #msg { margin-top: 18px; font-weight: bold; font-size: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>WASIM ONLINE CENTRE</h2>
+    <p>📸 फोटो या डॉक्यूमेंट चुनें और सबमिट करें</p>
+    
+    <div class="file-box">
+        <input type="file" id="fileInput" accept="image/*,.pdf">
+    </div>
+    
+    <button onclick="uploadFile()">सबमिट करें (Submit) 🚀</button>
+
+    <div id="msg"></div>
+</div>
+
 <script>
-  // आपका सारा जावास्क्रिप्ट कोड यहाँ होना चाहिए
-  fetch("YOUR_WEB_APP_URL", {
-    method: "POST",
-    body: JSON.stringify({ ... })
-  })
-  .then(async response => {
-    const text = await response.text();
-    console.log("Server response:", text);
-    let result;
-    try {
-      result = JSON.parse(text);
-    } catch (error) {
-      throw new Error("सर्वर ने JSON जवाब नहीं दिया: " + text.slice(0, 100));
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWZHBxXbvUfLU4FB_EvVcErCrOt4_ZyruBTNYNAYBT_sFP88uqNS8G0A0oxYhqcHjs/exec";
+
+    function uploadFile() {
+        const fileInput = document.getElementById('fileInput');
+        const msg = document.getElementById('msg');
+        if (!fileInput.files[0]) {
+            alert("कृपया फोटो या फाइल चुनें!");
+            return;
+        }
+
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        msg.style.color = "#38bdf8";
+        msg.innerText = "⏳ फाइल भेजी जा रही है... कृपया इंतज़ार करें।";
+
+        reader.onload = function(e) {
+            const rawLog = e.target.result.split(',')[1];
+            const data = {
+                action: "upload",
+                fileName: file.name,
+                mimeType: file.type,
+                fileData: rawLog
+            };
+
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.status === "success") {
+                    msg.style.color = "#22c55e";
+                    msg.innerText = "✅ फोटो वसीम ऑनलाइन सेंटर को सफलतापूर्वक मिल गई!";
+                    fileInput.value = "";
+                } else {
+                    msg.style.color = "#ef4444";
+                    msg.innerText = "❌ अपलोड में समस्या आई, फिर से कोशिश करें।";
+                }
+            })
+            .catch(() => {
+                msg.style.color = "#ef4444";
+                msg.innerText = "❌ नेटवर्क एरर! इंटरनेट चेक करें।";
+            });
+        };
+        reader.readAsDataURL(file);
     }
-    if (result.status === "success") {
-      // सफलता का कोड
-    } else {
-      // एरर का कोड
-    }
-  })
-  .catch(error => {
-    console.error("Upload error:", error);
-  });
 </script>
+
+</body>
+</html>
