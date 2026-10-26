@@ -28,8 +28,8 @@
         
         .btn-main { background: #38bdf8; color: #0f172a; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; transition: 0.3s; }
         .btn-main:hover { background: #0284c7; color: #fff; }
-        .btn-refresh { background: #0284c7; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.3s; }
-        .btn-refresh:hover { background: #0369a1; }
+        .btn-refresh { background: #22c55e; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.3s; }
+        .btn-refresh:hover { background: #16a34a; }
         .btn-download { background: #22c55e; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; display: inline-block; transition: 0.3s; margin-right: 5px; margin-bottom: 4px; }
         .btn-download:hover { background: #16a34a; }
         .btn-delete { background: #ef4444; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-bottom: 4px; }
@@ -65,7 +65,7 @@
     <div id="adminDashboard" class="dashboard-card" style="display:none;">
         <div class="dash-top">
             <h3 style="color:#f8fafc; font-size: 18px;">📥 कस्टमर द्वारा भेजी गई नई फाइलें</h3>
-            <button id="refreshBtn" onclick="loadFiles()" class="btn-refresh">🔄 रिफ्रेश करें</button>
+            <button id="refreshBtn" onclick="lightningRefresh()" class="btn-refresh">⚡ सुपरफास्ट रिफ्रेश</button>
         </div>
         
         <table>
@@ -85,8 +85,6 @@
 
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBJJpdyO7yZPfhOly2a6Q09K1XKvop5pnVIShV-H3I-5thTd3L0OA61giHbqNh-PqdFQ/exec";
-    
-    // 🔑 पासवर्ड: Moon@1234
     const MY_PASSWORD = "Moon@1234";
 
     function login() {
@@ -94,17 +92,47 @@
         if (pass === MY_PASSWORD) {
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
-            loadFiles();
+            
+            // 1. Pehle local cache se turant dikhao (0 Second Delay)
+            const cached = localStorage.getItem('wasim_rocket_cache');
+            if (cached) {
+                renderTable(JSON.parse(cached));
+            }
+            
+            // 2. Phir background me fresh fetch karo
+            fetchFiles(false);
         } else {
             alert("❌ गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
         }
     }
 
-    function loadFiles() {
+    function renderTable(files) {
         const table = document.getElementById('fileTable');
-        const refBtn = document.getElementById('refreshBtn');
+        if (!files || files.length === 0) {
+            table.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#94a3b8;'>अभी कोई नई फाइल नहीं आई है।</td></tr>";
+            return;
+        }
         
-        refBtn.innerText = "⏳ रिफ्रेश...";
+        table.innerHTML = "";
+        files.forEach(file => {
+            table.innerHTML += `
+                <tr id="row-${file.id}">
+                    <td><b>📄 ${file.name}</b></td>
+                    <td style="color:#94a3b8;">🕒 ${file.date}</td>
+                    <td>
+                        <a href="${file.url}" target="_blank" class="btn-download">डाउनलोड 📥</a>
+                        <button onclick="deleteFile('${file.id}', '${file.name}')" class="btn-delete">डिटेल / डिलीट ❌</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function fetchFiles(isManual) {
+        const refBtn = document.getElementById('refreshBtn');
+        if(isManual) {
+            refBtn.innerText = "⏳ सिंक हो रहा है...";
+        }
 
         fetch(SCRIPT_URL, {
             method: "POST",
@@ -112,43 +140,52 @@
         })
         .then(res => res.json())
         .then(data => {
-            refBtn.innerText = "🔄 रिफ्रेश करें";
-            if (data.status === "success" && data.files.length > 0) {
-                table.innerHTML = "";
-                data.files.reverse().forEach(file => {
-                    table.innerHTML += `
-                        <tr id="row-${file.id}">
-                            <td><b>📄 ${file.name}</b></td>
-                            <td style="color:#94a3b8;">🕒 ${file.date}</td>
-                            <td>
-                                <a href="${file.url}" target="_blank" class="btn-download">डाउनलोड 📥</a>
-                                <button onclick="deleteFile('${file.id}', '${file.name}')" class="btn-delete">डिटेल / डिलीट ❌</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            } else {
-                table.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#94a3b8;'>अभी कोई नई फाइल नहीं आई है।</td></tr>";
+            if(isManual) {
+                refBtn.innerText = "⚡ सुपरफास्ट रिफ्रेश";
+            }
+            if (data.status === "success" && data.files) {
+                const reversed = data.files.reverse();
+                localStorage.setItem('wasim_rocket_cache', JSON.stringify(reversed));
+                renderTable(reversed);
             }
         })
         .catch(() => {
-            refBtn.innerText = "🔄 रिफ्रेश करें";
-            table.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#ef4444;'>❌ डेटा लाने में समस्या आई, पुनः प्रयास करें।</td></tr>";
+            if(isManual) {
+                refBtn.innerText = "⚡ सुपरफास्ट रिफ्रेश";
+            }
         });
     }
 
-    // 🔥 Superfast Instant Delete (Zero Delay on Screen)
+    // ⚡ Lightning Refresh (Instant Cache Display + Background Update)
+    function lightningRefresh() {
+        const cached = localStorage.getItem('wasim_rocket_cache');
+        if (cached) {
+            renderTable(JSON.parse(cached)); // Ek second ki bhi der bina turant samne aayega
+        }
+        fetchFiles(true); // Background me naya update check karega
+    }
+
+    // 🔥 Superfast Instant Delete (Zero Delay on Screen)[span_2](start_span)[span_2](end_span)
     function deleteFile(fileId, fileName) {
         if (!confirm(`क्या आप वाकई "${fileName}" को डिलीट करना चाहते हैं?`)) {
             return;
         }
 
-        // Turant row ko screen se hata do taaki ek second ka bhi delay na lage
+        // 1. Turant screen se gayab karo[span_3](start_span)[span_3](end_span)
         const row = document.getElementById("row-" + fileId);
         if (row) {
             row.style.display = "none";
         }
 
+        // 2. Local cache se bhi turant hatao taaki refresh par wapas na aaye
+        const cached = localStorage.getItem('wasim_rocket_cache');
+        if (cached) {
+            let files = JSON.parse(cached);
+            files = files.filter(f => f.id !== fileId);
+            localStorage.setItem('wasim_rocket_cache', JSON.stringify(files));
+        }
+
+        // 3. Background me server ko delete request bhejo[span_4](start_span)[span_4](end_span)
         fetch(SCRIPT_URL, {
             method: "POST",
             body: JSON.stringify({ action: "delete", fileId: fileId })
