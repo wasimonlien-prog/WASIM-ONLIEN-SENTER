@@ -39,7 +39,7 @@
         .file-box { border: 2px dashed #38bdf8; padding: 20px; border-radius: 10px; background: #0f172a; margin-bottom: 20px; cursor: pointer; }
         input[type="file"] { width: 100%; color: #94a3b8; cursor: pointer; }
         
-        button { background: #22c55e; color: #fff; font-size: 17px; font-weight: bold; border: none; padding: 14px; border-radius: 10px; cursor: pointer; width: 100%; transition: 0.3s; }
+        button { background: #22c55e; color: #fff; font-size: 17px; font-weight: bold; border: none; padding: 14px; border-radius: 10px; cursor: pointer; width: 100%; transition: 0.3s; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); }
         button:hover { background: #16a34a; }
         
         #msg { margin-top: 18px; font-weight: bold; font-size: 15px; }
@@ -58,14 +58,15 @@
     <!-- Customer Welcome Message -->
     <div class="customer-welcome">
         <h3>👋 प्रिय ग्राहक, आपका स्वागत है!</h3>
-        <p>अपनी हाई-क्वालिटी फोटो या डॉक्यूमेंट चुनें और सबमिट करें। आपकी फाइल सुरक्षित सीधे हमारे पास पहुँचेगी।</p>
+        <p>अपनी एक या एक से अधिक हाई-क्वालिटी फोटो / डॉक्यूमेंट्स एक साथ चुनें और सबमिट करें।</p>
     </div>
     
     <div class="file-box">
-        <input type="file" id="fileInput" accept="image/*,.pdf">
+        <!-- 🚀 Yahan 'multiple' attribute jod diya gaya hai taaki ek sath kayi files select ho sakein -->
+        <input type="file" id="fileInput" accept="image/*,.pdf" multiple>
     </div>
     
-    <button onclick="uploadFile()">सबमिट करें (Submit) 🚀</button>
+    <button onclick="uploadFiles()">सबमिट करें (Submit) 🚀</button>
 
     <div id="msg"></div>
     
@@ -78,41 +79,54 @@
     // 🔗 Aapka Sahi Web App URL
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBJJpdyO7yZPfhOly2a6Q09K1XKvop5pnVIShV-H3I-5thTd3L0OA61giHbqNh-PqdFQ/exec";
 
-    function uploadFile() {
+    function uploadFiles() {
         const fileInput = document.getElementById('fileInput');
         const msg = document.getElementById('msg');
-        if (!fileInput.files[0]) {
-            alert("कृपया फोटो या फाइल चुनें!");
+        
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert("कृपया कम से कम एक फोटो या फाइल चुनें!");
             return;
         }
 
-        const file = fileInput.files[0];
-        const reader = new FileReader();
+        const files = fileInput.files;
+        let totalFiles = files.length;
+        
+        msg.style.color = "#38bdf8";
+        msg.innerText = `⏳ कुल ${totalFiles} फाइलें अपलोड हो रही हैं...`;
 
-        // Instant response message
-        msg.style.color = "#22c55e";
-        msg.innerText = "✅ फाइल सफलतापूर्वक सबमिट हो गई है!";
+        // Loop chalakar ek sath saari files ko background me bhejenge
+        for (let i = 0; i < totalFiles; i++) {
+            const file = files[i];
+            const reader = new FileReader();
 
-        reader.onload = function(e) {
-            const rawLog = e.target.result.split(',')[1];
-            const data = {
-                action: "upload",
-                fileName: file.name,
-                mimeType: file.type,
-                fileData: rawLog
-            };
+            reader.onload = (function(f) {
+                return function(e) {
+                    const rawLog = e.target.result.split(',')[1];
+                    const data = {
+                        action: "upload",
+                        fileName: f.name,
+                        mimeType: f.type,
+                        fileData: rawLog
+                    };
 
-            // Background fire-and-forget request so user faces zero delay
-            fetch(SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors",
-                body: JSON.stringify(data)
-            }).catch(() => {});
+                    // Background request taaki user ko zero delay mile
+                    fetch(SCRIPT_URL, {
+                        method: "POST",
+                        mode: "no-cors",
+                        body: JSON.stringify(data)
+                    }).catch(() => {});
+                };
+            })(file);
 
-            // Reset input instantly
-            fileInput.value = "";
-        };
-        reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
+        }
+
+        // Success message after instant dispatch
+        setTimeout(() => {
+            msg.style.color = "#22c55e";
+            msg.innerText = `✅ सभी ${totalFiles} फाइलें सफलतापूर्वक सबमिट हो गई हैं!`;
+            fileInput.value = ""; // Reset input
+        }, 800);
     }
 </script>
 
